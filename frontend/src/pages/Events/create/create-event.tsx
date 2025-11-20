@@ -263,4 +263,31 @@ export default function CreateEventPage() {
                 <Textarea
                   id="requirements"
                   placeholder="Age requirements, physical abilities, items to bring, etc."
-                  className="min-h-24 resize-
+                  className="min-h-24 resize-none"
+                  value={formData.requirements}
+                  onChange={(e) => setFormData({ ...formData, requirements: e.target.value })}
+                  disabled={isLoading}
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Submit Buttons */}
+          <div className="flex gap-4">
+            <Button 
+              type="submit" 
+              size="lg" 
+              className="flex-1 rounded-full"
+              disabled={isLoading}
+            >
+              {isLoading ? "Creating..." : "Create Event"}
+            </Button>
+            <Button type="button" variant="outline" size="lg" className="rounded-full bg-transparent" asChild>
+              <Link to="/events">Cancel</Link>
+            </Button>
+          </div>
+        </form>
+      </div>
+    </div>
+  )
+}
