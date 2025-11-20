@@ -1,3 +1,5 @@
+# backend/config.py
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import field_validator
 from typing import List, Union
@@ -22,19 +24,24 @@ class Settings(BaseSettings):
 
     # API Configuration
     API_V1_PREFIX: str = "/api/v1"
+    
+    # --- NEW CODE START ---
+    # Database Configuration
+    # This reads the DATABASE_URL environment variable we set in Render
+    DATABASE_URL: str = "sqlite:///./database.db" # Default to local file if cloud URL isn't found
+    # --- NEW CODE END ---
 
     # CORS Configuration
     CORS_ORIGINS: Union[List[str], str] = [
         "http://localhost:5173",
         "http://localhost:3000",
+        "https://my-volunteer-app-test.vercel.app" # Add your Vercel URL here later
     ]
 
     @field_validator("CORS_ORIGINS", mode="before")
     @classmethod
     def parse_cors_origins(cls, v):
-        """Parse CORS_ORIGINS from string or list"""
         if isinstance(v, str):
-            # Handle comma-separated string from .env
             return [origin.strip() for origin in v.split(",") if origin.strip()]
         return v
     
