@@ -1,23 +1,71 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-/* SDG 11 Theme Colors - Sustainable Cities */
-:root {
-  --sdg-orange: #FD9D24;
-  --sdg-green: #3C9D43; 
-  --bg-soft: #F3F4F6;
-}
-
+/* Global Settings */
 body {
-  background-color: var(--bg-soft);
+  background-color: #f3f4f6; /* Light Gray */
   font-family: 'Inter', sans-serif;
+  color: #111827;
 }
 
+/* --- SAFE COMPONENTS (Manually defined to prevent crashes) --- */
+
+/* Green Primary Button */
 .btn-primary {
-  @apply bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded-lg transition-all shadow-sm;
+  background-color: #059669; /* Emerald 600 */
+  color: white;
+  font-weight: 700;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.75rem;
+  transition: all 0.2s;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  border: none;
+  cursor: pointer;
 }
 
-.card {
-  @apply bg-white p-6 rounded-xl shadow-sm border border-gray-100;
+.btn-primary:hover {
+  background-color: #047857; /* Emerald 700 */
+  transform: translateY(-1px);
+}
+
+.btn-primary:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* White Secondary Button */
+.btn-secondary {
+  background-color: white;
+  color: #374151;
+  font-weight: 700;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.75rem;
+  border: 2px solid #e5e7eb;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.btn-secondary:hover {
+  border-color: #059669;
+  color: #059669;
+}
+
+/* Card Style */
+.bg-white {
+  background-color: white;
+}
+
+.rounded-2xl, .rounded-3xl {
+  border-radius: 1rem;
+}
+
+.shadow-sm, .shadow-xl {
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+.border {
+  border-width: 1px;
+}
+
+.border-gray-100 {
+  border-color: #f3f4f6;
 }
