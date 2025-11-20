@@ -1,17 +1,18 @@
-"use client"
-
-import type React from "react"
-
-import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle,
+import { 
+  Button, Card, CardContent, CardDescription, CardHeader, CardTitle,
   Input, Label, Textarea, 
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
- } from "../../../components/ui"
+} from "../../../components/ui"
 
 import { Heart, ArrowLeft, CalendarDays, MapPin, Users, FileText } from "lucide-react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom" // Added useNavigate
 import { useState } from "react"
+import { env } from "../../../config/env" // Import env to get API URL safely
 
 export default function CreateEventPage() {
+  const navigate = useNavigate() // Hook for redirection
+  const [isLoading, setIsLoading] = useState(false) // Loading state
+
   const [formData, setFormData] = useState({
     title: "",
     category: "",
@@ -23,10 +24,52 @@ export default function CreateEventPage() {
     requirements: "",
   })
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log("Event created:", formData)
-    // In a real app, this would submit to an API
+    setIsLoading(true)
+
+    try {
+      // 1. Format data to match your Backend Schema (schemas.py)
+      // Note: We combine date and time or keep them separate depending on your backend model.
+      // Here we send them as is, assuming your backend handles them.
+      const payload = {
+        title: formData.title,
+        category: formData.category,
+        date: formData.date, // Sending as string "YYYY-MM-DD"
+        time: formData.time,
+        location: formData.location,
+        description: formData.description,
+        max_participants: parseInt(formData.maxVolunteers) || 0, // Ensure number
+        requirements: formData.requirements,
+        image: "" // Optional placeholder
+      }
+
+      // 2. Send POST request to your backend
+      // Using env.apiUrl from your config file (defaults to http://localhost:8000)
+      const response = await fetch(`${env.apiUrl}/api/v1/events/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to create event')
+      }
+
+      const data = await response.json()
+      console.log("Success:", data)
+      
+      // 3. Redirect to the events list on success
+      navigate('/events')
+      
+    } catch (error) {
+      console.error("Error:", error)
+      alert("Failed to create event. Please check that your backend is running.")
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -91,6 +134,7 @@ export default function CreateEventPage() {
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                   required
+                  disabled={isLoading}
                 />
               </div>
 
@@ -99,6 +143,7 @@ export default function CreateEventPage() {
                 <Select
                   value={formData.category}
                   onValueChange={(value) => setFormData({ ...formData, category: value })}
+                  disabled={isLoading}
                 >
                   <SelectTrigger id="category">
                     <SelectValue placeholder="Select a category" />
@@ -122,6 +167,7 @@ export default function CreateEventPage() {
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   required
+                  disabled={isLoading}
                 />
               </div>
             </CardContent>
@@ -150,6 +196,7 @@ export default function CreateEventPage() {
                     value={formData.date}
                     onChange={(e) => setFormData({ ...formData, date: e.target.value })}
                     required
+                    disabled={isLoading}
                   />
                 </div>
                 <div className="space-y-2">
@@ -160,6 +207,7 @@ export default function CreateEventPage() {
                     value={formData.time}
                     onChange={(e) => setFormData({ ...formData, time: e.target.value })}
                     required
+                    disabled={isLoading}
                   />
                 </div>
               </div>
@@ -175,6 +223,7 @@ export default function CreateEventPage() {
                     value={formData.location}
                     onChange={(e) => setFormData({ ...formData, location: e.target.value })}
                     required
+                    disabled={isLoading}
                   />
                 </div>
               </div>
@@ -205,6 +254,7 @@ export default function CreateEventPage() {
                   value={formData.maxVolunteers}
                   onChange={(e) => setFormData({ ...formData, maxVolunteers: e.target.value })}
                   required
+                  disabled={isLoading}
                 />
               </div>
 
@@ -213,25 +263,4 @@ export default function CreateEventPage() {
                 <Textarea
                   id="requirements"
                   placeholder="Age requirements, physical abilities, items to bring, etc."
-                  className="min-h-24 resize-none"
-                  value={formData.requirements}
-                  onChange={(e) => setFormData({ ...formData, requirements: e.target.value })}
-                />
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Submit Buttons */}
-          <div className="flex gap-4">
-            <Button type="submit" size="lg" className="flex-1 rounded-full">
-              Create Event
-            </Button>
-            <Button type="button" variant="outline" size="lg" className="rounded-full bg-transparent" asChild>
-              <Link to="/events">Cancel</Link>
-            </Button>
-          </div>
-        </form>
-      </div>
-    </div>
-  )
-}
+                  className="min-h-24 resize-
