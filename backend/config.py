@@ -1,5 +1,4 @@
 # backend/config.py
-
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import field_validator
 from typing import List, Union
@@ -25,17 +24,18 @@ class Settings(BaseSettings):
     # API Configuration
     API_V1_PREFIX: str = "/api/v1"
     
-    # --- NEW CODE START ---
-    # Database Configuration
-    # This reads the DATABASE_URL environment variable we set in Render
-    DATABASE_URL: str = "sqlite:///./database.db" # Default to local file if cloud URL isn't found
-    # --- NEW CODE END ---
+    # --- NEW: Database Configuration ---
+    # This reads the DATABASE_URL from Render. 
+    # If not found (local computer), it falls back to sqlite.
+    DATABASE_URL: str = "sqlite:///./database.db" 
+    # -----------------------------------
 
     # CORS Configuration
     CORS_ORIGINS: Union[List[str], str] = [
         "http://localhost:5173",
         "http://localhost:3000",
-        "https://my-volunteer-app-test.vercel.app" # Add your Vercel URL here later
+        # Add your Vercel URL here once deployed!
+        "https://my-volunteer-app-test.vercel.app" 
     ]
 
     @field_validator("CORS_ORIGINS", mode="before")
